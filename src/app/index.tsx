@@ -4,7 +4,10 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      contentInsetAdjustmentBehavior="automatic"
+    >
       <Text style={styles.count}>{trades.length} trades</Text>
 
       {trades.map((trade) => (
