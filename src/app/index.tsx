@@ -1,17 +1,20 @@
-import { Text, View, StyleSheet } from "react-native";
+import TradeCard from "@/components/TradeCard";
+import { trades } from "@/data/trades";
+import { ScrollView, StyleSheet, Text } from "react-native";
 
-export default function Index() {
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.count}>{trades.length} trades</Text>
+
+      {trades.map((trade) => (
+        <TradeCard key={trade.id} trade={trade} />
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  container: { padding: 16, gap: 12 },
+  count: { color: "#5B6475" },
 });
