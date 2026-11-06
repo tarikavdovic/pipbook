@@ -15,6 +15,7 @@ Scan the QR code with Expo Go (SDK 58).
 
 - [x] List of trades (mock data)
 - [x] Trade details component
+- [x] Consistent styling with light and dark mode
 - [ ] Trade details screen
 - [ ] Add and edit trades with validation
 - [ ] Tabs for Trades, Stats and Profile
@@ -23,3 +24,9 @@ Scan the QR code with Expo Go (SDK 58).
 - [ ] Login and trades stored in Supabase
 - [ ] Stats: win rate, total R, best pair
 - [ ] Android build (APK)
+
+## Screenshots
+
+| Light mode | Dark mode |
+| --- | --- |
+| ![Home screen in light mode](docs/home-light.png) | ![Home screen in dark mode](docs/home-dark.png) |
