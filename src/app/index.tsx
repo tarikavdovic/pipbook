@@ -1,12 +1,11 @@
+import SummaryRow from "@/components/SummaryRow";
 import TradeCard from "@/components/TradeCard";
-import { FontSize, Spacing } from "@/constants/theme";
+import { Spacing } from "@/constants/theme";
 import { trades } from "@/data/trades";
-import { useTheme } from "@/hooks/use-theme";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   return (
@@ -18,9 +17,7 @@ export default function HomeScreen() {
       ]}
       contentInsetAdjustmentBehavior="automatic"
     >
-      <Text style={[styles.count, { color: theme.muted }]}>
-        {trades.length} trades
-      </Text>
+      <SummaryRow trades={trades} />
 
       {trades.map((trade) => (
         <TradeCard key={trade.id} trade={trade} />
@@ -31,5 +28,4 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: Spacing.md, gap: Spacing.md },
-  count: { fontSize: FontSize.small },
 });
