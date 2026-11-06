@@ -2,13 +2,22 @@ import { FontSize, Radius, Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import type { Trade } from "@/types";
 import { formatR, outcomeColor } from "@/utils/format";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 
 type TradeCardProps = {
   trade: Trade;
+  style?: StyleProp<ViewStyle>; // extra style from the parent, e.g. a width
 };
 
-export default function TradeCard({ trade }: TradeCardProps) {
+export default function TradeCard({ trade, style }: TradeCardProps) {
   const theme = useTheme();
 
   // The result badge, e.g. "+2R", coloured by outcome.
@@ -32,6 +41,7 @@ export default function TradeCard({ trade }: TradeCardProps) {
         styles.card,
         { backgroundColor: theme.card, borderColor: theme.border },
         pressed && styles.pressed,
+        style, // last, so the parent's style wins
       ]}
     >
       {trade.chartUrl ? (
