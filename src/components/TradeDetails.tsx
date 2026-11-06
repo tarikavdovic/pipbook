@@ -1,13 +1,10 @@
 import type { Trade } from "@/types";
+import { formatR } from "@/utils/format";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 type TradeDetailsProps = {
   trade: Trade;
 };
-
-function formatR(r: number) {
-  return r > 0 ? `+${r}R` : `${r}R`;
-}
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
