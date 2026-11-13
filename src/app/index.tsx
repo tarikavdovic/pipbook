@@ -1,10 +1,11 @@
 import EmptyState from "@/components/EmptyState";
+import FilterChip from "@/components/FilterChip";
 import SummaryRow from "@/components/SummaryRow";
 import TradeCard from "@/components/TradeCard";
 import { FontSize, Radius, Spacing } from "@/constants/theme";
 import { fetchTrades } from "@/data/api";
 import { useTheme } from "@/hooks/use-theme";
-import type { Trade } from "@/types";
+import type { Outcome, Trade } from "@/types";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -18,6 +19,21 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Status = "loading" | "error" | "ready";
+type Filter = "all" | Outcome;
+
+const FILTERS: { value: Filter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "win", label: "Win" },
+  { value: "loss", label: "Loss" },
+  { value: "breakeven", label: "Breakeven" },
+];
+
+// Word used in the empty message, e.g. "No losing trades".
+const FILTER_WORDS: Record<Outcome, string> = {
+  win: "winning",
+  loss: "losing",
+  breakeven: "breakeven",
+};
 
 export default function HomeScreen() {
   const theme = useTheme();
@@ -29,6 +45,11 @@ export default function HomeScreen() {
   const [attempt, setAttempt] = useState(0); // +1 = load again
   // Separate from status, so the old cards stay visible while refreshing.
   const [refreshing, setRefreshing] = useState(false);
+  const [filter, setFilter] = useState<Filter>("all");
+
+  // Calculated during render from trades + filter, so it is never out of date.
+  const visible =
+    filter === "all" ? trades : trades.filter((t) => t.outcome === filter);
 
   // Load the trades on first render, and again every time `attempt` changes.
   useEffect(() => {
@@ -112,7 +133,7 @@ export default function HomeScreen() {
       numColumns={columns}
       // The row style only exists when there is more than one column.
       columnWrapperStyle={columns > 1 ? styles.row : undefined}
-      data={trades}
+      data={visible}
       keyExtractor={(trade) => trade.id}
       // Pull down to reload; FlatList shows the spinner while refreshing is true.
       refreshing={refreshing}
@@ -121,15 +142,37 @@ export default function HomeScreen() {
         <TradeCard trade={item} style={{ width: cardWidth }} />
       )}
       // Scrolls together with the list, above the first card.
-      ListHeaderComponent={<SummaryRow trades={trades} />}
+      ListHeaderComponent={
+        <View style={styles.headerContent}>
+          {/* The summary always counts all trades, not only the filtered ones. */}
+          <SummaryRow trades={trades} />
+          <View style={styles.chips}>
+            {FILTERS.map((f) => (
+              <FilterChip
+                key={f.value}
+                label={f.label}
+                selected={filter === f.value}
+                onPress={() => setFilter(f.value)}
+              />
+            ))}
+          </View>
+        </View>
+      }
       ListHeaderComponentStyle={styles.header}
       // Space between two rows (not before the first or after the last).
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       ListEmptyComponent={
-        <EmptyState
-          title="No trades yet"
-          message="Your trades will appear here."
-        />
+        filter === "all" ? (
+          <EmptyState
+            title="No trades yet"
+            message="Your trades will appear here."
+          />
+        ) : (
+          <EmptyState
+            title={`No ${FILTER_WORDS[filter]} trades`}
+            message="Choose another filter."
+          />
+        )
       }
       contentContainerStyle={[
         styles.container,
@@ -145,6 +188,8 @@ const styles = StyleSheet.create({
   // flexGrow lets the content fill the screen, so the empty state can be centred
   container: { flexGrow: 1, padding: Spacing.md },
   header: { marginBottom: Spacing.md },
+  headerContent: { gap: Spacing.md },
+  chips: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.sm },
   separator: { height: Spacing.md },
   row: { gap: Spacing.md }, // space between cards in the same row
   // Used for the loading spinner and the error message.
