@@ -1,3 +1,4 @@
+import EmptyState from "@/components/EmptyState";
 import SummaryRow from "@/components/SummaryRow";
 import TradeCard from "@/components/TradeCard";
 import { Spacing } from "@/constants/theme";
@@ -35,6 +36,12 @@ export default function HomeScreen() {
       ListHeaderComponentStyle={styles.header}
       // Space between two rows (not before the first or after the last).
       ItemSeparatorComponent={() => <View style={styles.separator} />}
+      ListEmptyComponent={
+        <EmptyState
+          title="No trades yet"
+          message="Your trades will appear here."
+        />
+      }
       contentContainerStyle={[
         styles.container,
         // extra space so the last card is not hidden behind the bottom system bar
@@ -46,7 +53,8 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: Spacing.md },
+  // flexGrow lets the content fill the screen, so the empty state can be centred
+  container: { flexGrow: 1, padding: Spacing.md },
   header: { marginBottom: Spacing.md },
   separator: { height: Spacing.md },
   row: { gap: Spacing.md }, // space between cards in the same row
