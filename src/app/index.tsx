@@ -27,6 +27,8 @@ export default function HomeScreen() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [status, setStatus] = useState<Status>("loading");
   const [attempt, setAttempt] = useState(0); // +1 = load again
+  // Separate from status, so the old cards stay visible while refreshing.
+  const [refreshing, setRefreshing] = useState(false);
 
   // Load the trades on first render, and again every time `attempt` changes.
   useEffect(() => {
@@ -52,6 +54,19 @@ export default function HomeScreen() {
   function retry() {
     setStatus("loading");
     setAttempt((a) => a + 1);
+  }
+
+  // Called when the user pulls the list down.
+  async function refresh() {
+    setRefreshing(true);
+    try {
+      const data = await fetchTrades();
+      setTrades(data);
+    } catch {
+      // Refresh failed: keep showing the trades we already have.
+    } finally {
+      setRefreshing(false); // runs after success and after an error
+    }
   }
 
   // Phone: 1 column, small tablet: 2, wide screen: 3.
@@ -99,6 +114,9 @@ export default function HomeScreen() {
       columnWrapperStyle={columns > 1 ? styles.row : undefined}
       data={trades}
       keyExtractor={(trade) => trade.id}
+      // Pull down to reload; FlatList shows the spinner while refreshing is true.
+      refreshing={refreshing}
+      onRefresh={refresh}
       renderItem={({ item }) => (
         <TradeCard trade={item} style={{ width: cardWidth }} />
       )}
