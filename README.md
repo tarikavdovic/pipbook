@@ -13,7 +13,8 @@ Scan the QR code with Expo Go (SDK 58).
 
 ## Features
 
-- [x] List of trades (mock data)
+- [x] List of trades with FlatList, filters, sorting, pull-to-refresh and loading/empty/error states
+- [x] Delete a trade with long press
 - [x] Trade details component
 - [x] Consistent styling with light and dark mode
 - [ ] Trade details screen

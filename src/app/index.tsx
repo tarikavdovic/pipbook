@@ -29,6 +29,13 @@ const FILTERS: { value: Filter; label: string }[] = [
   { value: "breakeven", label: "Breakeven" },
 ];
 
+type Sort = "newest" | "best";
+
+const SORTS: { value: Sort; label: string }[] = [
+  { value: "newest", label: "Newest" },
+  { value: "best", label: "Best R" },
+];
+
 // Word used in the empty message, e.g. "No losing trades".
 const FILTER_WORDS: Record<Outcome, string> = {
   win: "winning",
@@ -47,10 +54,18 @@ export default function HomeScreen() {
   // Separate from status, so the old cards stay visible while refreshing.
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
+  const [sort, setSort] = useState<Sort>("newest");
 
   // Calculated during render from trades + filter, so it is never out of date.
   const visible =
     filter === "all" ? trades : trades.filter((t) => t.outcome === filter);
+
+  // sort() changes the array it is called on, so we sort a copy, never the state.
+  const sorted = [...visible].sort((a, b) =>
+    sort === "newest"
+      ? b.date.localeCompare(a.date) // "YYYY-MM-DD" strings sort like dates
+      : b.resultR - a.resultR // highest R first
+  );
 
   // Load the trades on first render, and again every time `attempt` changes.
   useEffect(() => {
@@ -151,7 +166,7 @@ export default function HomeScreen() {
       numColumns={columns}
       // The row style only exists when there is more than one column.
       columnWrapperStyle={columns > 1 ? styles.row : undefined}
-      data={visible}
+      data={sorted}
       keyExtractor={(trade) => trade.id}
       // Pull down to reload; FlatList shows the spinner while refreshing is true.
       refreshing={refreshing}
@@ -175,6 +190,16 @@ export default function HomeScreen() {
                 label={f.label}
                 selected={filter === f.value}
                 onPress={() => setFilter(f.value)}
+              />
+            ))}
+          </View>
+          <View style={styles.chips}>
+            {SORTS.map((s) => (
+              <FilterChip
+                key={s.value}
+                label={s.label}
+                selected={sort === s.value}
+                onPress={() => setSort(s.value)}
               />
             ))}
           </View>
