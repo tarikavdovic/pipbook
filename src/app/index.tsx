@@ -9,6 +9,7 @@ import type { Outcome, Trade } from "@/types";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
@@ -77,6 +78,23 @@ export default function HomeScreen() {
     setAttempt((a) => a + 1);
   }
 
+  // Asks first, then removes the trade from state (SummaryRow updates too).
+  function confirmDelete(trade: Trade) {
+    Alert.alert(
+      "Delete trade?",
+      `"${trade.pair} ${trade.direction.toUpperCase()} on ${trade.date}" will be removed.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          // filter returns a new array without this trade
+          onPress: () => setTrades((list) => list.filter((t) => t.id !== trade.id)),
+        },
+      ]
+    );
+  }
+
   // Called when the user pulls the list down.
   async function refresh() {
     setRefreshing(true);
@@ -139,7 +157,11 @@ export default function HomeScreen() {
       refreshing={refreshing}
       onRefresh={refresh}
       renderItem={({ item }) => (
-        <TradeCard trade={item} style={{ width: cardWidth }} />
+        <TradeCard
+          trade={item}
+          style={{ width: cardWidth }}
+          onLongPress={() => confirmDelete(item)}
+        />
       )}
       // Scrolls together with the list, above the first card.
       ListHeaderComponent={
