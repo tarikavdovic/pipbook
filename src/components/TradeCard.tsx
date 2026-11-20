@@ -1,7 +1,7 @@
 import { FontSize, Radius, Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import type { Trade } from "@/types";
-import { formatR, outcomeColor } from "@/utils/format";
+import { formatDate, formatR, outcomeColor } from "@/utils/format";
 import {
   Image,
   Pressable,
@@ -28,8 +28,8 @@ export default function TradeCard({
   const theme = useTheme();
 
   // What a screen reader says for this card, e.g.
-  // "EUR/USD buy, 2026-10-28, result +2R, London breakout"
-  const label = `${trade.pair} ${trade.direction}, ${trade.date}, result ${formatR(trade.resultR)}, ${trade.setup}`;
+  // "EUR/USD buy, 28 Oct 2026, result +2R, London breakout"
+  const label = `${trade.pair} ${trade.direction}, ${formatDate(trade.date)}, result ${formatR(trade.resultR)}, ${trade.setup}`;
 
   // The result badge, e.g. "+2R", coloured by outcome.
   const badge = (
@@ -75,7 +75,7 @@ export default function TradeCard({
             {trade.pair} · {trade.direction.toUpperCase()}
           </Text>
           <Text style={[styles.details, { color: theme.muted }]}>
-            {trade.date} · {trade.setup}
+            {formatDate(trade.date)} · {trade.setup}
           </Text>
         </View>
 

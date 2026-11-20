@@ -1,12 +1,9 @@
 import EmptyState from "@/components/EmptyState";
-import { FontSize, Spacing } from "@/constants/theme";
+import TradeDetails from "@/components/TradeDetails";
 import { getTrade } from "@/data/api";
-import { useTheme } from "@/hooks/use-theme";
-import { useLocalSearchParams } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 export default function TradeScreen() {
-  const theme = useTheme();
   // The [id] part of the address, e.g. "/trade/3" gives id = "3".
   const { id } = useLocalSearchParams<{ id: string }>();
   const trade = getTrade(id);
@@ -22,20 +19,12 @@ export default function TradeScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={[styles.text, { color: theme.text }]}>
-        Details of trade {trade.id}: {trade.pair}
-      </Text>
-    </View>
+    <>
+      {/* Sets the header title from the data, e.g. "EUR/USD · BUY" */}
+      <Stack.Screen
+        options={{ title: `${trade.pair} · ${trade.direction.toUpperCase()}` }}
+      />
+      <TradeDetails trade={trade} />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: Spacing.lg,
-  },
-  text: { fontSize: FontSize.body },
-});
