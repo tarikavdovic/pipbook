@@ -2,11 +2,13 @@ import { FontSize, Radius, Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import type { Trade } from "@/types";
 import { formatDate, formatR, outcomeColor } from "@/utils/format";
+import type { ReactNode } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type TradeDetailsProps = {
   trade: Trade;
+  children?: ReactNode; // extra content shown at the end, e.g. a button
 };
 
 // One "label ........ value" line.
@@ -21,7 +23,7 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function TradeDetails({ trade }: TradeDetailsProps) {
+export default function TradeDetails({ trade, children }: TradeDetailsProps) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const cardColors = { backgroundColor: theme.card, borderColor: theme.border };
@@ -89,6 +91,8 @@ export default function TradeDetails({ trade }: TradeDetailsProps) {
             {trade.notes || "No notes for this trade."}
           </Text>
         </View>
+
+        {children}
       </View>
     </ScrollView>
   );
