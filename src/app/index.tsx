@@ -6,6 +6,7 @@ import { FontSize, Radius, Spacing } from "@/constants/theme";
 import { fetchTrades } from "@/data/api";
 import { useTheme } from "@/hooks/use-theme";
 import type { Outcome, Trade } from "@/types";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -45,6 +46,7 @@ const FILTER_WORDS: Record<Outcome, string> = {
 
 export default function HomeScreen() {
   const theme = useTheme();
+  const router = useRouter(); // used to open the details screen
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions(); // updates when the window is resized
 
@@ -175,6 +177,8 @@ export default function HomeScreen() {
         <TradeCard
           trade={item}
           style={{ width: cardWidth }}
+          // Opens the details screen, e.g. /trade/3
+          onPress={() => router.push(`/trade/${item.id}`)}
           onLongPress={() => confirmDelete(item)}
         />
       )}

@@ -19,3 +19,9 @@ export async function fetchTrades(
 
   return [...trades]; // a copy, so changes in the app never touch the mock data
 }
+
+// Finds one trade by its id. Returns undefined when no trade has that id.
+// The id comes from the address, so it is always a string.
+export function getTrade(id: string): Trade | undefined {
+  return trades.find((trade) => trade.id === id);
+}

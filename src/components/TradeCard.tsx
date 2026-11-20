@@ -1,7 +1,7 @@
 import { FontSize, Radius, Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import type { Trade } from "@/types";
-import { formatR, outcomeColor } from "@/utils/format";
+import { formatDate, formatR, outcomeColor } from "@/utils/format";
 import {
   Image,
   Pressable,
@@ -15,15 +15,21 @@ import {
 type TradeCardProps = {
   trade: Trade;
   style?: StyleProp<ViewStyle>; // extra style from the parent, e.g. a width
+  onPress?: () => void; // e.g. open the details screen
   onLongPress?: () => void; // e.g. ask to delete the trade
 };
 
-export default function TradeCard({ trade, style, onLongPress }: TradeCardProps) {
+export default function TradeCard({
+  trade,
+  style,
+  onPress,
+  onLongPress,
+}: TradeCardProps) {
   const theme = useTheme();
 
   // What a screen reader says for this card, e.g.
-  // "EUR/USD buy, 2026-10-28, result +2R, London breakout"
-  const label = `${trade.pair} ${trade.direction}, ${trade.date}, result ${formatR(trade.resultR)}, ${trade.setup}`;
+  // "EUR/USD buy, 28 Oct 2026, result +2R, London breakout"
+  const label = `${trade.pair} ${trade.direction}, ${formatDate(trade.date)}, result ${formatR(trade.resultR)}, ${trade.setup}`;
 
   // The result badge, e.g. "+2R", coloured by outcome.
   const badge = (
@@ -41,11 +47,11 @@ export default function TradeCard({ trade, style, onLongPress }: TradeCardProps)
 
   return (
     <Pressable
-      onPress={() => console.log("Open", trade.id)}
+      onPress={onPress}
       onLongPress={onLongPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityHint="Long press to delete"
+      accessibilityHint="Opens the trade. Long press to delete."
       // Android only: ripple effect when the card is touched.
       android_ripple={{ color: theme.border }}
       style={({ pressed }) => [
@@ -69,7 +75,7 @@ export default function TradeCard({ trade, style, onLongPress }: TradeCardProps)
             {trade.pair} · {trade.direction.toUpperCase()}
           </Text>
           <Text style={[styles.details, { color: theme.muted }]}>
-            {trade.date} · {trade.setup}
+            {formatDate(trade.date)} · {trade.setup}
           </Text>
         </View>
 
