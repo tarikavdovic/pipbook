@@ -17,7 +17,8 @@ Scan the QR code with Expo Go (SDK 58).
 - [x] Delete a trade with long press
 - [x] Trade details component
 - [x] Consistent styling with light and dark mode
-- [ ] Trade details screen
+- [x] Trade details screen
+- [x] About screen and not-found screen
 - [ ] Add and edit trades with validation
 - [ ] Tabs for Trades, Stats and Profile
 - [ ] Chart screenshot from the camera or gallery
