@@ -15,10 +15,16 @@ import {
 type TradeCardProps = {
   trade: Trade;
   style?: StyleProp<ViewStyle>; // extra style from the parent, e.g. a width
+  onPress?: () => void; // e.g. open the details screen
   onLongPress?: () => void; // e.g. ask to delete the trade
 };
 
-export default function TradeCard({ trade, style, onLongPress }: TradeCardProps) {
+export default function TradeCard({
+  trade,
+  style,
+  onPress,
+  onLongPress,
+}: TradeCardProps) {
   const theme = useTheme();
 
   // What a screen reader says for this card, e.g.
@@ -41,11 +47,11 @@ export default function TradeCard({ trade, style, onLongPress }: TradeCardProps)
 
   return (
     <Pressable
-      onPress={() => console.log("Open", trade.id)}
+      onPress={onPress}
       onLongPress={onLongPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityHint="Long press to delete"
+      accessibilityHint="Opens the trade. Long press to delete."
       // Android only: ripple effect when the card is touched.
       android_ripple={{ color: theme.border }}
       style={({ pressed }) => [
